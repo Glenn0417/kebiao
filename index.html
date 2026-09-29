@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7">
+<title>地科二班</title>
+<style>
+  :root{
+    --bg:#f2f2f7;
+    --card:#ffffff;
+    --card2:#f7f7fa;
+    --ink:#000000;
+    --ink2:#8e8e93;
+    --ink3:#c7c7cc;
+    --sep:rgba(60,60,67,.13);
+    --blue:#007aff;
+    --blue-soft:#e5f1ff;
+    --radius:20px;
+    --ease:cubic-bezier(.32,.72,0,1);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#000000;
+      --card:#1c1c1e;
+      --card2:#2c2c2e;
+      --ink:#ffffff;
+      --ink2:#8e8e93;
+      --ink3:#48484a;
+      --sep:rgba(84,84,88,.42);
+      --blue:#0a84ff;
+      --blue-soft:#0a2a4d;
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",
+      "Helvetica Neue","Microsoft YaHei",sans-serif;
+    font-size:17px;line-height:1.47;
+    letter-spacing:-.022em;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:620px;margin:0 auto;padding:0 20px 48px}
+
+  /* ---------- 大标题 ---------- */
+  .big{padding:26px 0 4px}
+  .big h1{
+    font-size:34px;font-weight:700;letter-spacing:-.028em;
+    line-height:1.13;margin:0;
+  }
+  .big .meta{
+    font-size:15px;color:var(--ink2);margin-top:6px;
+    letter-spacing:-.01em;
+  }
+
+  /* ---------- 分段控制器 ---------- */
+  .seg{
+    display:flex;gap:2px;margin:18px 0 22px;
+    background:rgba(118,118,128,.12);
+    border-radius:11px;padding:2px;
+    position:sticky;top:8px;z-index:20;
+    backdrop-filter:saturate(180%) blur(20px);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+  }
+  .seg button{
+    flex:1;padding:7px 0;border:0;border-radius:9px;
+    background:transparent;color:var(--ink);
+    font-size:14px;font-weight:590;letter-spacing:-.01em;
+    font-family:inherit;cursor:pointer;
+    transition:background .2s var(--ease),box-shadow .2s var(--ease);
+  }
+  .seg button.on{
+    background:var(--card);
+    box-shadow:0 1px 4px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);
+  }
+  @media (prefers-color-scheme: dark){
+    .seg button.on{background:#48484a;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+  }
+
+  /* ---------- 卡片 ---------- */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.045),0 8px 24px -12px rgba(0,0,0,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    .card{box-shadow:none;background:var(--card)}
+  }
+  .card .ttl{
+    font-size:13px;font-weight:590;color:var(--ink2);
+    letter-spacing:.01em;text-transform:uppercase;
+    margin:0 0 14px;
+  }
+
+  /* ---------- 大数字 ---------- */
+  .num{
+    font-size:48px;font-weight:700;letter-spacing:-.04em;
+    line-height:1.05;color:var(--ink);
+  }
+  .num small{font-size:20px;font-weight:590;letter-spacing:-.02em;margin-left:2px;color:var(--ink2)}
+  .rng{font-size:15px;color:var(--ink2);margin-top:8px;letter-spacing:-.01em}
+  .hint{
+    font-size:15px;color:var(--blue);margin-top:16px;
+    padding-top:16px;border-top:1px solid var(--sep);
+    letter-spacing:-.01em;
+  }
+
+  /* ---------- 倒计时 ---------- */
+  .cds{display:flex;gap:12px}
+  .cds .it{
+    flex:1;text-align:center;background:var(--card2);
+    border-radius:14px;padding:14px 6px;
+  }
+  .cds .n{font-size:24px;font-weight:640;letter-spacing:-.02em;line-height:1.1}
+  .cds .n small{font-size:13px;font-weight:500;color:var(--ink2);margin-left:1px}
+  .cds .t{font-size:12.5px;color:var(--ink2);margin-top:5px}
+
+  /* ---------- 课程行 ---------- */
+  .row{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--sep)}
+  .row:last-child{border-bottom:0;padding-bottom:0}
+  .row:first-of-type{padding-top:0}
+  .row .tm{flex:0 0 66px}
+  .row .tm b{display:block;font-size:16px;font-weight:590;letter-spacing:-.02em}
+  .row .tm span{font-size:12px;color:var(--ink2);display:block;margin-top:1px}
+  .row .bd{flex:1;min-width:0}
+  .row .nm{font-size:16px;font-weight:500;letter-spacing:-.02em;line-height:1.35}
+  .row .mt{font-size:13.5px;color:var(--ink2);margin-top:3px;word-break:break-all;letter-spacing:-.01em}
+  .dot{
+    display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--blue);margin-right:7px;vertical-align:1px;
+  }
+  .tag{
+    display:inline-block;font-size:11.5px;font-weight:590;
+    padding:1.5px 7px;border-radius:6px;margin-left:7px;vertical-align:1.5px;
+    letter-spacing:0;
+  }
+  .tag.o{background:rgba(255,149,0,.16);color:#c96a00}
+  .tag.e{background:rgba(175,82,222,.15);color:#8e3fb8}
+  .tag.k{background:rgba(0,122,255,.12);color:#0062cc}
+  @media (prefers-color-scheme: dark){
+    .tag.o{color:#ffb340}
+    .tag.e{color:#cf8ee8}
+    .tag.k{color:#5aa9ff}
+  }
+
+  /* ---------- 周课表 ---------- */
+  .gwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+  .grid{display:grid;grid-template-columns:42px repeat(5,minmax(54px,1fr));gap:5px;min-width:330px}
+  .grid .hh{
+    font-size:12px;font-weight:590;color:var(--ink2);
+    text-align:center;padding:0 0 8px;letter-spacing:-.01em;
+  }
+  .grid .rh{
+    text-align:right;padding-right:6px;line-height:1.25;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .grid .rh b{font-size:13px;font-weight:590;color:var(--ink2)}
+  .grid .rh i{font-size:10px;color:var(--ink3);font-style:normal;font-variant-numeric:tabular-nums}
+  .cell{
+    border-radius:12px;padding:6px 4px;min-height:60px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    gap:2px;text-align:center;
+    transition:transform .22s var(--ease);
+  }
+  .cell:active{transform:scale(.96)}
+  .cell .cn{font-size:12.5px;font-weight:590;line-height:1.2;letter-spacing:-.01em}
+  .cell .rm{font-size:10px;opacity:.66;letter-spacing:0}
+  .cell.empty{background:var(--card2);border-radius:12px}
+  .sep2{height:3px}
+  /* iOS 系统色 · 浅色底 */
+  .k0{background:#e5f1ff;color:#0062cc}
+  .k1{background:#fff3e0;color:#c96a00}
+  .k2{background:#e8f8ec;color:#1f8a3b}
+  .k3{background:#f5eafa;color:#8e3fb8}
+  .k4{background:#e6f7fe;color:#0b7ea8}
+  .k5{background:#ffe9ee;color:#d62a4e}
+  .k6{background:#fff8e0;color:#a67c00}
+  .k7{background:#f0eaff;color:#5b52c9}
+  .k8{background:#f0f0f3;color:#5a5a5f}
+  @media (prefers-color-scheme: dark){
+    .k0{background:#0a2a4d;color:#7fbfff}
+    .k1{background:#3a2a10;color:#ffc46b}
+    .k2{background:#123318;color:#7fd99a}
+    .k3{background:#2c1a3a;color:#cf9ee8}
+    .k4{background:#0c2b36;color:#6fcbe8}
+    .k5{background:#3a121c;color:#ff91a8}
+    .k6{background:#332b0f;color:#ffd964}
+    .k7{background:#1f1a3d;color:#a9a3f0}
+    .k8{background:#2c2c2e;color:#a1a1a6}
+  }
+
+  /* ---------- 列表（关键节点 / 周历） ---------- */
+  ul.ev{list-style:none;margin:0;padding:0}
+  ul.ev li{
+    display:flex;gap:14px;padding:12px 0;
+    border-bottom:1px solid var(--sep);font-size:15.5px;letter-spacing:-.02em;
+  }
+  ul.ev li:last-child{border-bottom:0;padding-bottom:0}
+  ul.ev li:first-child{padding-top:0}
+  ul.ev .d{flex:0 0 94px;color:var(--ink2);font-size:14px;font-variant-numeric:tabular-nums}
+  .tag.h{background:rgba(255,149,0,.16);color:#c96a00}
+  @media (prefers-color-scheme: dark){ .tag.h{color:#ffb340} }
+
+  .wt{width:100%;border-collapse:collapse;font-size:15px;letter-spacing:-.02em}
+  .wt td{
+    padding:11px 8px 11px 0;border-bottom:1px solid var(--sep);
+    font-variant-numeric:tabular-nums;
+  }
+  .wt tr:last-child td{border-bottom:0}
+  .wt tr:last-child td{padding-bottom:0}
+  .wt .wk{width:66px;color:var(--ink2);font-size:14px}
+  .wt .st{width:46px;text-align:right;font-size:12.5px;color:var(--ink2)}
+  .wt tr.now td,.wt tr.now .wk{color:var(--blue);font-weight:590}
+  .wt tr.past td{color:var(--ink3)}
+  .wt tr.past .wk{color:var(--ink3)}
+
+  /* ---------- 入口（更多） ---------- */
+  .ep{
+    display:flex;align-items:center;gap:14px;
+    padding:13px 0;border-bottom:1px solid var(--sep);
+    text-decoration:none;color:inherit;
+    transition:opacity .18s var(--ease);
+  }
+  .ep:last-child{border-bottom:0;padding-bottom:0}
+  .ep:first-of-type{padding-top:0}
+  .ep:active{opacity:.5}
+  .ep .ei{
+    width:40px;height:40px;flex:0 0 40px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;font-weight:590;
+  }
+  .ep .eb{flex:1;min-width:0}
+  .ep .en{font-size:16.5px;font-weight:500;letter-spacing:-.02em}
+  .ep .ed{font-size:13.5px;color:var(--ink2);margin-top:2px;letter-spacing:-.01em}
+  .ep .ea{color:var(--ink3);font-size:19px;font-weight:400}
+  .ep.off{opacity:.38}
+  .e1{background:#e8f8ec;color:#1f8a3b}
+  .e2{background:#e5f1ff;color:#0062cc}
+  .e3{background:#f0f0f3;color:#5a5a5f}
+  @media (prefers-color-scheme: dark){
+    .e1{background:#123318;color:#7fd99a}
+    .e2{background:#0a2a4d;color:#7fbfff}
+    .e3{background:#2c2c2e;color:#a1a1a6}
+  }
+
+  /* ---------- 按钮 ---------- */
+  .btn{
+    width:100%;padding:15px;border:0;border-radius:15px;
+    background:var(--blue);color:#fff;
+    font-size:16.5px;font-weight:590;letter-spacing:-.02em;
+    font-family:inherit;cursor:pointer;
+    transition:transform .2s var(--ease),opacity .2s var(--ease);
+  }
+  .btn:active{transform:scale(.98);opacity:.85}
+  .btn.g{
+    background:var(--card2);color:var(--blue);margin-top:10px;
+  }
+
+  .foot{
+    font-size:12.5px;color:var(--ink2);line-height:1.7;
+    padding:6px 4px 0;letter-spacing:-.01em;
+  }
+  .credit{
+    text-align:center;font-size:12.5px;color:var(--ink3);
+    padding:28px 0 8px;letter-spacing:-.01em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="big">
+    <h1>地科二班</h1>
+    <div class="meta" id="meta">—</div>
+  </div>
+
+  <nav class="seg">
+    <button data-t="today" class="on">今天</button>
+    <button data-t="week">课表</button>
+    <button data-t="cal">校历</button>
+  </nav>
+
+  <!-- 今天 -->
+  <section id="p-today">
+    <div class="card">
+      <div class="ttl">现在</div>
+      <div class="num" id="wnum">—</div>
+      <div class="rng" id="wrange">—</div>
+      <div class="hint" id="fline" hidden></div>
+    </div>
+
+    <div class="card">
+      <div class="ttl">倒计时</div>
+      <div class="cds" id="cd"></div>
+    </div>
+
+    <div class="card">
+      <div class="ttl" id="thd">今天</div>
+      <div style="font-size:22px;font-weight:640;letter-spacing:-.03em;margin:-6px 0 14px" id="tcnt">—</div>
+      <div id="tlist"></div>
+    </div>
+  </section>
+
+  <!-- 课表 -->
+  <section id="p-week" hidden>
+    <div class="card">
+      <div class="ttl">周课表</div>
+      <div class="gwrap"><div class="grid" id="grid"></div></div>
+    </div>
+    <div class="card">
+      <div class="ttl">课程明细</div>
+      <div id="clist"></div>
+    </div>
+  </section>
+
+  <!-- 校历 -->
+  <section id="p-cal" hidden>
+    <div class="card">
+      <div class="ttl">关键节点</div>
+      <ul class="ev" id="ev"></ul>
+    </div>
+    <div class="card">
+      <div class="ttl">教学周历</div>
+      <table class="wt"><tbody id="wks"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="ttl">导进手机日历</div>
+      <button class="btn" id="icsAll">下载课表 + 校历</button>
+      <button class="btn g" id="icsCal">只下载关键节点</button>
+      <div class="foot" style="margin-top:14px">
+        下载后点开，手机会问"是否添加到日历"。微信里打开要先点右上角「···」→ 在浏览器中打开。
+      </div>
+    </div>
+  </section>
+
+
+  <div class="foot">
+    数据来源：《地理科学专业 2026 级二班课表》《2026-2027 秋季学期校历》《学生版-关于近期本科教学工作安排的通知》。课表标注周次为校历教学周；2026 级自 10 月 12 日起开始上课。如有调整，以学校官方发布为准。
+  </div>
+  <div class="credit">地科二班 · 2026 级</div>
+</div>
+
+<script>
+(function(){
+  var DAY=86400000;
+  var TS=new Date(2026,7,31), CS=new Date(2026,9,12);
+  var PC=["一","二","三","四","五","六","七","八","九","十"];
+  var PT={1:["08:10","08:50"],2:["09:00","09:40"],3:["10:00","10:40"],4:["10:50","11:30"],
+    5:["13:30","14:10"],6:["14:20","15:00"],7:["15:20","16:00"],8:["16:10","16:50"],
+    9:["17:00","17:40"],10:["17:50","18:30"]};
+  var DC=["","周一","周二","周三","周四","周五","周六","周日"];
+  var C=[
+    {d:1,p:1,n:"大学英语 1",note:"单、双周",r:"崇师楼 A301 / A302 / C301 / C302 / C303"},
+    {d:1,p:3,n:"高等数学 B1",note:"必修 48 学时",t:"陈静仁",r:"崇师楼 A304（1-2 班）",w:"4-15周"},
+    {d:1,p:5,n:"地理学导论",note:"必修 16 学时",t:"张冬有 等",r:"理工三 220",w:"4-7周"},
+    {d:1,p:7,n:"人工智能程序设计基础",r:"行知楼 A503（1-2 班）"},
+    {d:1,p:9,n:"沟通与写作",r:"理工三 122"},
+    {d:2,p:1,n:"习近平新时代中国特色社会主义思想概论",t:"彭琳",r:"崇师楼 D305"},
+    {d:2,p:3,n:"高等数学 B1",note:"必修 48 学时",t:"陈静仁",r:"崇师楼 A304（1-2 班）",w:"4-15周"},
+    {d:2,p:5,n:"体育 1",r:""},
+    {d:2,p:7,n:"地球概论",note:"核心 48 学时",t:"林琳",r:"崇师楼 A302（1-2 班）",w:"4-15周"},
+    {d:3,p:1,n:"地球概论",note:"核心 48 学时",t:"林琳",r:"崇师楼 A304（1-2 班）",w:"4-15周"},
+    {d:4,p:3,n:"大学英语 1",note:"双周",r:"崇师楼 A301 / A302 / C301 / C302 / C303"},
+    {d:4,p:5,n:"普通地质学",note:"必修 32 学时",t:"王艳茹",r:"崇师楼 A304（1-2 班）",w:"3-10周"},
+    {d:4,p:7,n:"大学生心理健康教育",t:"刘钰明",r:"崇师楼 D305"},
+    {d:5,p:3,n:"沟通与写作",note:"单周",r:"理工三 122"},
+    {d:5,p:3,n:"人工智能程序设计基础",note:"双周",r:"行知楼 A503（1-2 班）"},
+    {d:5,p:5,n:"普通地质学",note:"必修 32 学时",t:"王艳茹",r:"崇师楼 A304（1-2 班）",w:"4-11周"},
+    {d:5,p:7,n:"习近平新时代中国特色社会主义思想概论",t:"彭琳",r:"崇师楼 D305"},
+    {d:5,p:9,n:"地理学导论",note:"必修 16 学时",t:"张冬有 等",r:"理工三 220",w:"4-7周"}
+  ];
+  var KC={"大学英语 1":0,"高等数学 B1":1,"地理学导论":2,"人工智能程序设计基础":3,
+    "沟通与写作":4,"习近平新时代中国特色社会主义思想概论":5,"体育 1":6,
+    "地球概论":7,"普通地质学":8,"大学生心理健康教育":8};
+  var SH={"大学英语 1":"英语","高等数学 B1":"高数","地理学导论":"地导",
+    "人工智能程序设计基础":"人工","沟通与写作":"沟通","习近平新时代中国特色社会主义思想概论":"习概",
+    "体育 1":"体育","地球概论":"地球","普通地质学":"地质","大学生心理健康教育":"心理"};
+
+  function mid(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+  function f2(m,d){return m+"/"+d;}
+  function ymd(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
+  function tg(n){ if(!n) return "";
+    var o=n.indexOf("单周")>=0,e=n.indexOf("双周")>=0;
+    if(o&&!e) return '<span class="tag o">单周</span>';
+    if(e&&!o) return '<span class="tag e">双周</span>';
+    return ""; }
+
+  var today=mid(new Date());
+  var dow=today.getDay()===0?7:today.getDay();
+  var wi=Math.floor((today-TS)/DAY/7)+1;
+  var toS=Math.ceil((CS-today)/DAY);
+
+  document.getElementById("meta").textContent=
+    (today.getMonth()+1)+" 月 "+today.getDate()+" 日　"+DC[dow]+
+    "　·　第 "+wi+" 周（"+(wi%2?"单":"双")+"周）"+(toS>0?"　·　距开课 "+toS+" 天":"");
+
+  var ws=[];
+  for(var i=1;i<=17;i++){var s=new Date(TS.getTime()+(i-1)*7*DAY);
+    ws.push({l:i+" 周",s:s,e:new Date(s.getTime()+6*DAY),ty:"t"});}
+  ws.push({l:"考试 1",s:new Date(2026,11,28),e:new Date(2027,0,3),ty:"x"});
+  ws.push({l:"考试 2",s:new Date(2027,0,4),e:new Date(2027,0,10),ty:"x"});
+  var h0=new Date(2027,0,11);
+  for(var j=1;j<=7;j++){var hs=new Date(h0.getTime()+(j-1)*7*DAY);
+    ws.push({l:"寒假 "+j,s:hs,e:new Date(hs.getTime()+6*DAY),ty:"h"});}
+  var cur=null;
+  for(var k=0;k<ws.length;k++){if(today>=ws[k].s&&today<=ws[k].e){cur=ws[k];break;}}
+
+  var wn=document.getElementById("wnum"),wr=document.getElementById("wrange");
+  if(cur){
+    wn.innerHTML=cur.ty==="t"?("第 "+cur.l.replace(" 周","")+"<small> 教学周</small>")
+      :cur.ty==="x"?(cur.l+"<small> 考试周</small>")
+      :("寒假<small> 第 "+cur.l.replace("寒假 ","")+" 周</small>");
+    wr.textContent=f2(cur.s.getMonth()+1,cur.s.getDate())+" — "+f2(cur.e.getMonth()+1,cur.e.getDate());
+  } else { wn.innerHTML="开学前"; wr.textContent="—"; }
+  if(toS>0){var fl=document.getElementById("fline");fl.hidden=false;
+    fl.textContent="距 10 月 12 日开始上课还有 "+toS+" 天";}
+
+  var ch="";
+  [{t:"期末考试",d:new Date(2026,11,28)},{t:"寒假",d:new Date(2027,0,11)},{t:"开学报到",d:new Date(2027,1,28)}]
+    .forEach(function(o){var n=Math.ceil((o.d-today)/DAY);
+      ch+='<div class="it"><div class="n">'+(n>0?n+"<small>天</small>":"—")+'</div><div class="t">距'+o.t+'</div></div>';});
+  document.getElementById("cd").innerHTML=ch;
+
+  function lsH(c){
+    var t=PT[c.p]||["",""];var mt=[];
+    if(c.t) mt.push(c.t); if(c.r) mt.push(c.r); if(c.w) mt.push(c.w+"上课");
+    return '<div class="row"><div class="tm"><b>'+t[0]+'</b><span>第'+PC[c.p-1]+'节</span></div>'+
+      '<div class="bd"><div class="nm">'+c.n+tg(c.note)+
+      (c.note&&!tg(c.note)?'<span class="tag k">'+c.note+'</span>':'')+'</div>'+
+      '<div class="mt">'+(mt.length?mt.join("　·　"):"地点待定")+'</div></div></div>';
+  }
+
+  var ti=C.filter(function(c){return c.d===dow;}).sort(function(a,b){return a.p-b.p;});
+  var th=document.getElementById("thd"),tc=document.getElementById("tcnt"),tl=document.getElementById("tlist");
+  if(toS>0){
+    th.textContent="还没开课"; tc.textContent="10 月 12 日开始上课";
+    tl.innerHTML=(ti.length?ti.map(lsH).join(""):'<div class="row"><div class="bd"><div class="nm">这天没课</div></div></div>');
+  } else {
+    th.textContent="今天是 "+DC[dow];
+    tc.textContent=ti.length?ti.length+" 节课":"今天没有课";
+    tl.innerHTML=ti.length?ti.map(lsH).join(""):'<div class="row"><div class="bd"><div class="nm">好好休息</div></div></div>';
+  }
+
+  (function(){
+    var g=document.getElementById("grid"),ps=[];
+    C.forEach(function(c){if(ps.indexOf(c.p)<0) ps.push(c.p);});
+    ps.sort(function(a,b){return a-b;});
+    var h='<div class="hh"></div>';
+    for(var d=1;d<=5;d++) h+='<div class="hh">'+DC[d]+'</div>';
+    ps.forEach(function(p){
+      h+='<div class="rh"><b>'+PC[p-1]+'</b>'+((PT[p]||[""])[0])+'</div>';
+      for(var d=1;d<=5;d++){
+        var its=C.filter(function(c){return c.d===d&&c.p===p;});
+        if(!its.length){h+='<div class="cell empty"></div>';continue;}
+        var inner=its.map(function(c){
+          var pm=(function(n){if(!n) return "";var o=n.indexOf("单周")>=0,e=n.indexOf("双周")>=0;
+            if(o&&!e) return "·单"; if(e&&!o) return "·双"; return "";})(c.note);
+          var rm=""; if(c.r){var m=c.r.match(/(崇师楼|行知楼|理工三)\s*([A-Z]?\d+)/);
+            rm=m?(m[1]==="崇师楼"?"崇":(m[1]==="行知楼"?"行":"理三"))+m[2]:"";}
+          return '<div class="cn">'+(SH[c.n]||c.n)+pm+'</div>'+(rm?'<div class="rm">'+rm+'</div>':'');
+        }).join('<div class="sep2"></div>');
+        h+='<div class="cell k'+(KC[its[0].n]||0)+'">'+inner+'</div>';
+      }
+    });
+    g.innerHTML=h;
+  })();
+
+  var seen={},ord=[];
+  C.forEach(function(c){
+    if(!seen[c.n]){seen[c.n]={n:c.n,note:c.note,t:c.t,r:c.r,w:[],s:[]};ord.push(c.n);}
+    var s=seen[c.n];
+    if(c.t&&!s.t) s.t=c.t;
+    if(c.r&&s.r.indexOf(c.r)<0) s.r=s.r?s.r+"；"+c.r:c.r;
+    if(c.w&&s.w.indexOf(c.w)<0) s.w.push(c.w);
+    s.s.push(DC[c.d]+"第"+PC[c.p-1]+"节");
+  });
+  document.getElementById("clist").innerHTML=ord.map(function(n){
+    var s=seen[n],mt=[];if(s.t) mt.push(s.t);if(s.r) mt.push(s.r);
+    return '<div class="row"><div class="tm" style="flex:0 0 84px"><b style="font-size:11.5px;color:var(--ink2);font-weight:500;letter-spacing:0">'+
+      s.s.join("<br>")+(s.w.length?"<br>（"+s.w.join(" / ")+"）":"")+'</b></div>'+
+      '<div class="bd"><div class="nm">'+s.n+tg(s.note)+'</div>'+
+      (mt.length?'<div class="mt">'+mt.join("　·　")+'</div>':'')+'</div></div>';
+  }).join("");
+
+  var evs=[
+    {d:"9/25 – 10/7",x:"放假调休，共 13 天",t:["h","假期"]},
+    {d:"10/12 周一",x:"2026 级开始上课",t:["k","节点"]},
+    {d:"10/17 周六",x:"补课 · 周一课表",t:["h","补课"]},
+    {d:"10/24 周六",x:"补课 · 周二课表",t:["h","补课"]},
+    {d:"10/31 周六",x:"补课 · 周三课表",t:["h","补课"]},
+    {d:"第 9 周",x:"期中教学检查",t:["k","节点"]},
+    {d:"12/28 – 1/10",x:"期末考试（2 周）",t:["k","节点"]},
+    {d:"1/11 – 2/28",x:"寒假（7 周）",t:["k","假期"]}
+  ];
+  document.getElementById("ev").innerHTML=evs.map(function(e){
+    return '<li><span class="d">'+e.d+'</span><span>'+e.x+
+      '<span class="tag '+e.t[0]+'">'+e.t[1]+'</span></span></li>';
+  }).join("");
+
+  document.getElementById("wks").innerHTML=ws.map(function(w){
+    var cls=[];if(cur&&w===cur) cls.push("now");else if(today>w.e) cls.push("past");
+    var st=(cur&&w===cur)?"现在":(today>w.e?"已过":"");
+    return '<tr class="'+cls.join(" ")+'"><td class="wk">'+w.l+'</td><td>'+
+      f2(w.s.getMonth()+1,w.s.getDate())+" — "+f2(w.e.getMonth()+1,w.e.getDate())+
+      '</td><td class="st">'+st+'</td></tr>';
+  }).join("");
+
+  function dl(name,lines){
+    var b=new Blob([lines.join("\r\n")],{type:"text/calendar;charset=utf-8"});
+    var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(a.href);},3000);
+  }
+  function hd(){return["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//hrbnu//dike2//CN","CALSCALE:GREGORIAN"];}
+  function nv(o,i){var s=o.s,e=new Date(s.getTime()+DAY);
+    return["BEGIN:VEVENT","UID:n"+i+"-"+ymd(s)+"@local","DTSTART;VALUE=DATE:"+ymd(s),
+      "DTEND;VALUE=DATE:"+ymd(e),"SUMMARY:"+o.t,"DESCRIPTION:"+o.desc,
+      "BEGIN:VALARM","TRIGGER:-PT12H","ACTION:DISPLAY","DESCRIPTION:"+o.t,"END:VALARM","END:VEVENT"];}
+  document.getElementById("icsCal").addEventListener("click",function(){
+    var ns=[{s:new Date(2026,9,12),t:"2026级开始上课",desc:"地科二班正式开课"},
+      {s:new Date(2026,9,17),t:"补课（周一课表）",desc:"周六补课"},
+      {s:new Date(2026,9,24),t:"补课（周二课表）",desc:"周六补课"},
+      {s:new Date(2026,9,31),t:"补课（周三课表）",desc:"周六补课"},
+      {s:new Date(2026,11,28),t:"期末考试开始",desc:"12/28 - 1/10"},
+      {s:new Date(2027,0,11),t:"寒假开始",desc:"1/11 - 2/28"}];
+    var L=hd(),i=0;ns.forEach(function(o){L=L.concat(nv(o,i++));});
+    L.push("END:VCALENDAR");dl("地科二班-关键日期.ics",L);
+  });
+  document.getElementById("icsAll").addEventListener("click",function(){
+    var L=hd(),idx=0;
+    [{s:new Date(2026,9,12),t:"2026级开始上课",desc:"地科二班正式开课"},
+     {s:new Date(2026,11,28),t:"期末考试开始",desc:"12/28 - 1/10"},
+     {s:new Date(2027,0,11),t:"寒假开始",desc:"1/11 - 2/28"}]
+      .forEach(function(o){L=L.concat(nv(o,"n"+(idx++)));});
+    C.forEach(function(c){
+      var w1=1,w2=17;
+      if(c.w){var m=c.w.match(/(\d+)\D+(\d+)/);if(m){w1=+m[1];w2=+m[2];}}
+      var hO=c.note&&c.note.indexOf("单周")>=0, hE=c.note&&c.note.indexOf("双周")>=0;
+      for(var w=w1;w<=w2;w++){
+        if(hO&&!hE&&w%2===0) continue;
+        if(hE&&!hO&&w%2===1) continue;
+        var day=new Date(TS.getTime()+(w-1)*7*DAY+(c.d-1)*DAY);
+        var t=PT[c.p];if(!t) continue;
+        L.push("BEGIN:VEVENT","UID:c-"+ymd(day)+"-"+c.p+"-"+idx+"@local",
+          "DTSTART:"+ymd(day)+"T"+t[0].replace(":","")+"00",
+          "DTEND:"+ymd(day)+"T"+t[1].replace(":","")+"00",
+          "SUMMARY:"+c.n,"LOCATION:"+(c.r||"待定"),
+          "DESCRIPTION:"+[c.t||"",c.note||"","第"+PC[c.p-1]+"节"].filter(Boolean).join(" / "),
+          "BEGIN:VALARM","TRIGGER:-PT20M","ACTION:DISPLAY","DESCRIPTION:"+c.n,"END:VALARM",
+          "END:VEVENT");
+        idx++;
+      }
+    });
+    L.push("END:VCALENDAR");dl("地科二班-课表与校历.ics",L);
+  });
+
+  var bs=document.querySelectorAll(".seg button");
+  function show(t){
+    ["today","week","cal"].forEach(function(x){
+      document.getElementById("p-"+x).hidden=(x!==t);});
+    bs.forEach(function(b){b.classList.toggle("on",b.dataset.t===t);});
+    try{history.replaceState(null,"","#"+t);}catch(e){}
+  }
+  bs.forEach(function(b){b.addEventListener("click",function(){show(b.dataset.t);});});
+  var h=(location.hash||"").replace("#","");
+  if(["today","week","cal"].indexOf(h)>=0) show(h);
+})();
+</script>
+</body>
+</html>
