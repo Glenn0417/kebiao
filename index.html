@@ -415,9 +415,8 @@
       </div>
 
       <div class="hr"></div>
-      <div class="ttl2">只导一次（不自动更新）</div>
-      <button class="btn g" id="icsAll">下载课表 + 校历</button>
-      <button class="btn g" id="icsCal">只下载关键节点</button>
+      <div class="ttl2">只想导一次（不自动更新）</div>
+      <a class="btn g abtn" href="dike2.ics" download>下载日历文件</a>
       <div class="foot" style="margin-top:12px">
         下载后点开，手机会问"是否添加到日历"。微信里请先点右上角「···」→ 在浏览器中打开。
       </div>
@@ -490,11 +489,11 @@
 
   function mid(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
   function f2(m,d){return m+"/"+d;}
-  function ymd(d){return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");}
   function tg(n){ if(!n) return "";
-    var o=n.indexOf("单周")>=0,e=n.indexOf("双周")>=0;
-    if(o&&!e) return '<span class="tag o">单周</span>';
-    if(e&&!o) return '<span class="tag e">双周</span>';
+    var o=n.indexOf("单")>=0,e=n.indexOf("双")>=0;
+    if(o&&e) return "";
+    if(o) return '<span class="tag o">单周</span>';
+    if(e) return '<span class="tag e">双周</span>';
     return ""; }
 
   var today=mid(new Date());
@@ -565,8 +564,8 @@
         var its=C.filter(function(c){return c.d===d&&c.p===p;});
         if(!its.length){h+='<div class="cell empty"></div>';continue;}
         var inner=its.map(function(c){
-          var pm=(function(n){if(!n) return "";var o=n.indexOf("单周")>=0,e=n.indexOf("双周")>=0;
-            if(o&&!e) return "·单"; if(e&&!o) return "·双"; return "";})(c.note);
+          var pm=(function(n){if(!n) return "";var o=n.indexOf("单")>=0,e=n.indexOf("双")>=0;
+            if(o&&e) return ""; if(o) return "·单"; if(e) return "·双"; return "";})(c.note);
           var rm=""; if(c.r){var m=c.r.match(/(崇师楼|行知楼|理工三)\s*([A-Z]?\d+)/);
             rm=m?(m[1]==="崇师楼"?"崇":(m[1]==="行知楼"?"行":"理三"))+m[2]:"";}
           return '<div class="cn">'+(SH[c.n]||c.n)+pm+'</div>'+(rm?'<div class="rm">'+rm+'</div>':'');
@@ -617,54 +616,6 @@
       '</td><td class="st">'+st+'</td></tr>';
   }).join("");
 
-  function dl(name,lines){
-    var b=new Blob([lines.join("\r\n")],{type:"text/calendar;charset=utf-8"});
-    var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    setTimeout(function(){URL.revokeObjectURL(a.href);},3000);
-  }
-  function hd(){return["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//hrbnu//dike2//CN","CALSCALE:GREGORIAN"];}
-  function nv(o,i){var s=o.s,e=new Date(s.getTime()+DAY);
-    return["BEGIN:VEVENT","UID:n"+i+"-"+ymd(s)+"@local","DTSTART;VALUE=DATE:"+ymd(s),
-      "DTEND;VALUE=DATE:"+ymd(e),"SUMMARY:"+o.t,"DESCRIPTION:"+o.desc,
-      "BEGIN:VALARM","TRIGGER:-PT12H","ACTION:DISPLAY","DESCRIPTION:"+o.t,"END:VALARM","END:VEVENT"];}
-  document.getElementById("icsCal").addEventListener("click",function(){
-    var ns=[{s:new Date(2026,9,12),t:"2026级开始上课",desc:"地科二班正式开课"},
-      {s:new Date(2026,9,17),t:"补课（周一课表）",desc:"周六补课"},
-      {s:new Date(2026,9,24),t:"补课（周二课表）",desc:"周六补课"},
-      {s:new Date(2026,9,31),t:"补课（周三课表）",desc:"周六补课"},
-      {s:new Date(2026,11,28),t:"期末考试开始",desc:"12/28 - 1/10"},
-      {s:new Date(2027,0,11),t:"寒假开始",desc:"1/11 - 2/28"}];
-    var L=hd(),i=0;ns.forEach(function(o){L=L.concat(nv(o,i++));});
-    L.push("END:VCALENDAR");dl("地科二班-关键日期.ics",L);
-  });
-  document.getElementById("icsAll").addEventListener("click",function(){
-    var L=hd(),idx=0;
-    [{s:new Date(2026,9,12),t:"2026级开始上课",desc:"地科二班正式开课"},
-     {s:new Date(2026,11,28),t:"期末考试开始",desc:"12/28 - 1/10"},
-     {s:new Date(2027,0,11),t:"寒假开始",desc:"1/11 - 2/28"}]
-      .forEach(function(o){L=L.concat(nv(o,"n"+(idx++)));});
-    C.forEach(function(c){
-      var w1=1,w2=17;
-      if(c.w){var m=c.w.match(/(\d+)\D+(\d+)/);if(m){w1=+m[1];w2=+m[2];}}
-      var hO=c.note&&c.note.indexOf("单周")>=0, hE=c.note&&c.note.indexOf("双周")>=0;
-      for(var w=w1;w<=w2;w++){
-        if(hO&&!hE&&w%2===0) continue;
-        if(hE&&!hO&&w%2===1) continue;
-        var day=new Date(TS.getTime()+(w-1)*7*DAY+(c.d-1)*DAY);
-        var t=PT[c.p];if(!t) continue;
-        L.push("BEGIN:VEVENT","UID:c-"+ymd(day)+"-"+c.p+"-"+idx+"@local",
-          "DTSTART:"+ymd(day)+"T"+t[0].replace(":","")+"00",
-          "DTEND:"+ymd(day)+"T"+t[1].replace(":","")+"00",
-          "SUMMARY:"+c.n,"LOCATION:"+(c.r||"待定"),
-          "DESCRIPTION:"+[c.t||"",c.note||"","第"+PC[c.p-1]+"节"].filter(Boolean).join(" / "),
-          "BEGIN:VALARM","TRIGGER:-PT20M","ACTION:DISPLAY","DESCRIPTION:"+c.n,"END:VALARM",
-          "END:VEVENT");
-        idx++;
-      }
-    });
-    L.push("END:VCALENDAR");dl("地科二班-课表与校历.ics",L);
-  });
 
   (function(){
     var box  = document.getElementById("noticeCard");
