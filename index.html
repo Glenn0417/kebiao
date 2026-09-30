@@ -95,6 +95,31 @@
     content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
     background:var(--blue);margin-right:7px;vertical-align:1.5px;
   }
+  /* 置顶通知 */
+  .nrow.pin{border-left:3px solid var(--blue);padding-left:12px;margin-left:-15px}
+  .npin{
+    display:inline-block;font-size:11px;font-weight:590;letter-spacing:0;
+    padding:1.5px 6px;border-radius:5px;margin-right:7px;vertical-align:1.5px;
+    background:rgba(0,122,255,.12);color:#0062cc;
+  }
+  @media (prefers-color-scheme: dark){
+    .npin{background:rgba(10,132,255,.22);color:#5aa9ff}
+  }
+  /* 历史折叠区 */
+  .nfold{
+    margin-top:14px;padding-top:13px;border-top:1px solid var(--sep);
+    font-size:14px;color:var(--ink2);letter-spacing:-.01em;
+    display:flex;align-items:center;gap:5px;cursor:pointer;
+    transition:opacity .18s var(--ease);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .nfold:active{opacity:.5}
+  .nfold .arw{
+    display:inline-block;font-size:11px;line-height:1;
+    transition:transform .28s var(--ease);
+  }
+  .nfold.open .arw{transform:rotate(90deg)}
+  #noticeHist{overflow:hidden;transition:height .32s var(--ease)}
 
   .card{
     background:var(--card);
@@ -305,6 +330,10 @@
     <div class="card ncard" id="noticeCard" hidden>
       <div class="ttl">班级通知</div>
       <div id="noticeList"></div>
+      <div id="noticeHist" style="height:0"></div>
+      <div id="noticeFold" class="nfold" hidden>
+        <span class="arw">▶</span><span id="noticeFoldTxt">查看历史通知</span>
+      </div>
     </div>
     <div class="card">
       <div class="ttl">现在</div>
@@ -369,14 +398,22 @@
   /* ===== 班级通知 =====
      加一条就复制一行，日期格式 2026-10-08。
      日期过了的会自动变灰；只显示最近 8 条。 */
+  /* ===== 班级通知 =====
+     加一条 = 复制一行，改成你要的内容：
+       { d:"2026-10-08", t:"标题", b:"正文" }
+     可选字段：
+       pin:true   → 置顶，一直排在最上面（重要的事用它）
+     规则（已写死，不用管）：
+       · 未到期的按日期从近到远排，最先到期的在最上面
+       · 已过期的自动收进底部「查看历史通知」，点一下展开
+       · 最多显示 8 条
+     ⚠️ 正文里不要写"今天/明天/下周"，一律写具体日期 */
   var NOTICES = [
     { d:"2026-10-08", t:"《实验室安全与防护》期末考试", b:"10/8 零点开放，10/10 截止。只有一次机会，打开即倒计时" },
     { d:"2026-10-12", t:"2026 级开始上课", b:"按课表上课，详见「课表」页" },
     { d:"2026-10-17", t:"周六补课", b:"按周一课表上课" },
     { d:"2026-10-24", t:"周六补课", b:"按周二课表上课" },
     { d:"2026-10-31", t:"周六补课", b:"按周三课表上课" },
-    // ↑ 加新通知就照着复制一行，日期写 2026-10-08 这种格式
-    // ⚠️ 正文里不要写"今天/明天/下周"，一律写具体日期
   ];
 
   var DAY=86400000;
@@ -592,42 +629,69 @@
   });
 
   (function(){
-    var box = document.getElementById("noticeCard");
+    var box  = document.getElementById("noticeCard");
     var list = document.getElementById("noticeList");
+    var hist = document.getElementById("noticeHist");
+    var fold = document.getElementById("noticeFold");
+    var ftxt = document.getElementById("noticeFoldTxt");
     if (!box || !list) return;
+
     if (!NOTICES || !NOTICES.length){
       list.innerHTML = '<div class="nempty">暂无通知</div>';
       box.hidden = false; return;
     }
+
     var t0 = new Date();
     var today0 = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate());
+    function dtOf(o){
+      var p = String(o.d).split("-");
+      return new Date(+p[0], +p[1] - 1, +p[2]);
+    }
 
-    var future = [], past = [];
+    var pins = [], future = [], past = [];
     NOTICES.forEach(function(o){
-      var p = String(o.d).split("-");
-      var dt = new Date(+p[0], +p[1] - 1, +p[2]);
-      (dt < today0 ? past : future).push(o);
+      if (o.pin) { pins.push(o); return; }
+      (dtOf(o) < today0 ? past : future).push(o);
     });
-    // 未到期的：日期升序，最先到期的排最前
-    future.sort(function(a, b){
-      return String(a.d).localeCompare(String(b.d));
-    });
-    // 已过期的：日期降序，最近的过期通知排在后面
-    past.sort(function(a, b){
-      return String(b.d).localeCompare(String(a.d));
-    });
-    var arr = future.concat(past).slice(0, 8);
 
-    list.innerHTML = arr.map(function(o){
+    // 置顶：按日期升序（同一天保持原顺序）
+    pins.sort(function(a, b){ return String(a.d).localeCompare(String(b.d)); });
+    // 未到期：日期升序，最先到期的排最前
+    future.sort(function(a, b){ return String(a.d).localeCompare(String(b.d)); });
+    // 已过期：日期降序
+    past.sort(function(a, b){ return String(b.d).localeCompare(String(a.d)); });
+
+    var live = pins.concat(future).slice(0, 8);
+    var dead = past.slice(0, 12);
+
+    function rowOf(o, isPast){
       var p = String(o.d).split("-");
-      var dt = new Date(+p[0], +p[1] - 1, +p[2]);
-      var past = dt < today0;
-      return '<div class="nrow' + (past ? " past" : " fresh") + '">' +
+      var cls = isPast ? " past" : (o.pin ? " pin" : " fresh");
+      return '<div class="nrow' + cls + '">' +
         '<div class="nd">' + p[1] + "/" + p[2] + '</div>' +
-        '<div class="nt" style="flex:1;min-width:0">' + o.t +
+        '<div class="nt" style="flex:1;min-width:0">' +
+        (o.pin ? '<span class="npin">置顶</span>' : '') + o.t +
         (o.b ? '<div class="nb">' + o.b + '</div>' : '') +
         '</div></div>';
-    }).join("");
+    }
+
+    list.innerHTML = live.map(function(o){ return rowOf(o, false); }).join("");
+
+    // 历史折叠
+    if (dead.length){
+      hist.innerHTML = dead.map(function(o){ return rowOf(o, true); }).join("");
+      fold.hidden = false;
+      ftxt.textContent = "查看历史通知（" + dead.length + "）";
+
+      var open = false;
+      fold.addEventListener("click", function(){
+        open = !open;
+        fold.classList.toggle("open", open);
+        hist.style.height = open ? (hist.scrollHeight + "px") : "0px";
+        ftxt.textContent = open ? "收起历史通知" : ("查看历史通知（" + dead.length + "）");
+      });
+    }
+
     box.hidden = false;
   })();
 
