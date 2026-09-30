@@ -288,6 +288,21 @@
     .e3{background:#2c2c2e;color:#a1a1a6}
   }
 
+  /* ---------- 订阅直达入口（今天页） ---------- */
+  .subbar{width:100%;display:flex;align-items:center;gap:12px;text-align:left;
+    background:var(--card);border:0;border-radius:var(--radius);padding:15px 18px;
+    margin-bottom:20px;font-family:inherit;cursor:pointer;
+    box-shadow:0 1px 3px rgba(0,0,0,.045),0 8px 24px -12px rgba(0,0,0,.08);
+    transition:transform .2s var(--ease)}
+  .subbar:active{transform:scale(.985)}
+  .subbar .sd{width:9px;height:9px;border-radius:50%;background:var(--blue);flex:0 0 9px}
+  .subbar .sb{flex:1;min-width:0;font-size:16px;font-weight:500;
+    letter-spacing:-.02em;color:var(--ink)}
+  .subbar .ss{display:block;font-size:13px;font-weight:400;color:var(--ink2);
+    margin-top:2px;letter-spacing:-.01em}
+  .subbar .sa{color:var(--ink3);font-size:20px;line-height:1}
+  @media (prefers-color-scheme: dark){ .subbar{box-shadow:none} }
+
   /* ---------- 日历订阅 ---------- */
   a.btn.abtn{display:block;text-align:center;text-decoration:none}
   .sub{font-size:15px;color:var(--ink2);line-height:1.55;margin:-6px 0 16px;letter-spacing:-.01em}
@@ -345,6 +360,13 @@
 
   <!-- 今天 -->
   <section id="p-today">
+    <button class="subbar" id="goSub">
+      <span class="sd"></span>
+      <span class="sb">订阅到手机日历
+        <span class="ss">上课前 20 分钟、考试前 1 天自动提醒</span>
+      </span>
+      <span class="sa">&rsaquo;</span>
+    </button>
     <div class="card ncard" id="noticeCard" hidden>
       <div class="ttl">班级通知</div>
       <div id="noticeList"></div>
@@ -394,7 +416,7 @@
       <div class="ttl">教学周历</div>
       <table class="wt"><tbody id="wks"></tbody></table>
     </div>
-    <div class="card">
+    <div class="card" id="subCard">
       <div class="ttl">手机日历提醒</div>
       <div class="sub">订阅一次，之后自动更新。上课前 20 分钟、考试前 1 天会自动弹通知。</div>
 
@@ -701,6 +723,20 @@
           show("已复制，去日历里粘贴");
         }, fallback);
       } else { fallback(); }
+    });
+  })();
+
+  (function(){
+    var b = document.getElementById("goSub");
+    if (!b) return;
+    b.addEventListener("click", function(){
+      if (typeof show === "function") show("cal");
+      var c = document.getElementById("subCard");
+      if (c && c.scrollIntoView) {
+        setTimeout(function(){
+          c.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      }
     });
   })();
 
