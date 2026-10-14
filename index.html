@@ -169,8 +169,8 @@
   .row{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--sep)}
   .row:last-child{border-bottom:0;padding-bottom:0}
   .row:first-of-type{padding-top:0}
-  .row .tm{flex:0 0 66px}
-  .row .tm b{display:block;font-size:16px;font-weight:590;letter-spacing:-.02em}
+  .row .tm{flex:0 0 88px}
+  .row .tm b{display:block;font-size:15px;font-weight:590;letter-spacing:-.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
   .row .tm span{font-size:12px;color:var(--ink2);display:block;margin-top:1px}
   .row .bd{flex:1;min-width:0}
   .row .nm{font-size:16px;font-weight:500;letter-spacing:-.02em;line-height:1.35}
@@ -355,7 +355,7 @@
   <div class="big">
     <h1>地科二班</h1>
     <div class="meta" id="meta">—</div>
-    <div class="upd">数据更新：<b>2026-10-14</b> · 课表已同步 · 新增「早自习教室」</div>
+    <div class="upd">数据更新：<b>2026-10-14</b> · 新增「早自习教室」与各课起止时间</div>
   </div>
 
   <nav class="seg">
@@ -569,8 +569,9 @@
 
   function lsH(c){
     var t=PT[c.p]||["",""];var mt=[];
+    var e2=(PT[c.p+1]||["",""])[1];var tt=e2?t[0]+"–"+e2:t[0];
     if(c.t) mt.push(c.t); if(c.r) mt.push(c.r); if(c.w) mt.push(c.w+"上课");
-    return '<div class="row"><div class="tm"><b>'+t[0]+'</b><span>第'+PC[c.p-1]+'节</span></div>'+
+    return '<div class="row"><div class="tm"><b>'+tt+'</b><span>第'+PC[c.p-1]+'节</span></div>'+
       '<div class="bd"><div class="nm">'+c.n+tg(c.note)+
       (c.note&&!tg(c.note)?'<span class="tag k">'+c.note+'</span>':'')+'</div>'+
       '<div class="mt">'+(mt.length?mt.join("　·　"):"地点待定")+'</div></div></div>';
@@ -600,7 +601,8 @@
     var h='<div class="hh"></div>';
     for(var d=1;d<=5;d++) h+='<div class="hh">'+DC[d]+'</div>';
     ps.forEach(function(p){
-      h+='<div class="rh"><b>'+PC[p-1]+'</b>'+((PT[p]||[""])[0])+'</div>';
+      var pt=PT[p]||["",""],e2=(PT[p+1]||["",""])[1]||"";
+      h+='<div class="rh"><b>'+PC[p-1]+'</b><i>'+pt[0]+'</i>'+(e2?'<i>'+e2+'</i>':'')+'</div>';
       for(var d=1;d<=5;d++){
         var its=C.filter(function(c){return c.d===d&&c.p===p;});
         if(!its.length){h+='<div class="cell empty"></div>';continue;}
