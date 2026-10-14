@@ -355,7 +355,7 @@
   <div class="big">
     <h1>地科二班</h1>
     <div class="meta" id="meta">—</div>
-    <div class="upd">数据更新：<b>2026-10-08</b> · 已按学院新课表同步周次与教室</div>
+    <div class="upd">数据更新：<b>2026-10-14</b> · 课表已同步 · 新增「早自习教室」</div>
   </div>
 
   <nav class="seg">
@@ -410,6 +410,10 @@
       <div class="ttl">课程明细</div>
       <div id="clist"></div>
     </div>
+    <div class="card">
+      <div class="ttl">早自习教室</div>
+      <table class="wt"><tbody id="zao"></tbody></table>
+    </div>
   </section>
 
   <!-- 校历 -->
@@ -450,7 +454,7 @@
 
 
   <div class="foot">
-    数据来源：《（2026.10.08）26-27-1 学期地理科学学院课表》《2026-2027 秋季学期校历》《学生版-关于近期本科教学工作安排的通知》。2026 级课程自第 5 周起，第 5 周 = 10 月 12 日当周（开始上课），第 16 周 = 12 月 28 日当周。如有调整，以学校官方发布为准。
+    数据来源：《（2026.10.08）26-27-1 学期地理科学学院课表》《26早自习教室》《2026-2027 秋季学期校历》《学生版-关于近期本科教学工作安排的通知》。2026 级课程自第 5 周起，第 5 周 = 10 月 12 日当周（开始上课），第 16 周 = 12 月 28 日当周。如有调整，以学校官方发布为准。
   </div>
   <div class="credit">地科二班 · 2026 级</div>
 </div>
@@ -507,6 +511,10 @@
     {d:5,p:7,n:"习近平新时代中国特色社会主义思想概论",t:"彭琳",r:"崇师楼 D305"},
     {d:5,p:9,n:"地理学导论",note:"必修 16 学时",t:"张冬有/张丽娟/谢远云/陈晓红",r:"崇师楼 D204",w:"5-8周"}
   ];
+  /* ===== 早自习教室（学院《26早自习教室》表 · 2026-10-14 收）=====
+     本班「地科一二」的安排；教室照抄原表，null = 原表写「无」。
+     以后要改：周一~周五对应 1~5，逗号后直接改教室名。 */
+  var ZAO={1:null,2:"D305",3:"A304",4:null,5:null};
   var KC={"大学英语 1":0,"高等数学 B1":1,"地理学导论":2,"人工智能程序设计基础":3,
     "沟通与写作":4,"习近平新时代中国特色社会主义思想概论":5,"体育 1":6,
     "地球概论":7,"普通地质学":8,"大学生心理健康教育":8};
@@ -569,14 +577,20 @@
   }
 
   var ti=C.filter(function(c){return c.d===dow;}).sort(function(a,b){return a.p-b.p;});
+  var zr="";
+  if(dow>=1&&dow<=5){
+    var zc=ZAO[dow];
+    zr='<div class="row"><div class="tm"><b>早自习</b><span>教室</span></div>'+
+      '<div class="bd"><div class="nm"'+(zc?'':' style="color:var(--ink3)"')+'>'+(zc||"无")+'</div></div></div>';
+  }
   var th=document.getElementById("thd"),tc=document.getElementById("tcnt"),tl=document.getElementById("tlist");
   if(toS>0){
     th.textContent="还没开课"; tc.textContent="10 月 12 日开始上课";
-    tl.innerHTML=(ti.length?ti.map(lsH).join(""):'<div class="row"><div class="bd"><div class="nm">这天没课</div></div></div>');
+    tl.innerHTML=zr+(ti.length?ti.map(lsH).join(""):'<div class="row"><div class="bd"><div class="nm">这天没课</div></div></div>');
   } else {
     th.textContent="今天是 "+DC[dow];
     tc.textContent=ti.length?ti.length+" 节课":"今天没有课";
-    tl.innerHTML=ti.length?ti.map(lsH).join(""):'<div class="row"><div class="bd"><div class="nm">好好休息</div></div></div>';
+    tl.innerHTML=zr+(ti.length?ti.map(lsH).join(""):'<div class="row"><div class="bd"><div class="nm">好好休息</div></div></div>');
   }
 
   (function(){
@@ -641,6 +655,11 @@
     return '<tr class="'+cls.join(" ")+'"><td class="wk">'+w.l+'</td><td>'+
       f2(w.s.getMonth()+1,w.s.getDate())+" — "+f2(w.e.getMonth()+1,w.e.getDate())+
       '</td><td class="st">'+st+'</td></tr>';
+  }).join("");
+
+  document.getElementById("zao").innerHTML=[1,2,3,4,5].map(function(d){
+    var c=ZAO[d];
+    return '<tr><td class="wk">'+DC[d]+'</td><td'+(c?'':' style="color:var(--ink3)"')+'>'+(c||"无")+'</td></tr>';
   }).join("");
 
 
