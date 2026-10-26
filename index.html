@@ -85,45 +85,50 @@
     .seg button.on{background:#48484a;box-shadow:0 1px 4px rgba(0,0,0,.5)}
   }
 
-  /* ---------- 卡片 ---------- */
-  .ncard{border-color:var(--brand)}
-  .nrow{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--sep)}
-  .nrow:last-child{border-bottom:0;padding-bottom:0}
-  .nrow:first-of-type{padding-top:0}
-  .nd{flex:0 0 56px;font-size:13.5px;color:var(--ink2);
-    font-variant-numeric:tabular-nums;padding-top:2px;letter-spacing:-.01em}
-  .nt{font-size:16px;font-weight:500;letter-spacing:-.02em;line-height:1.35}
-  .nb{font-size:13.5px;color:var(--ink2);margin-top:3px;line-height:1.5;letter-spacing:-.01em}
-  .nempty{font-size:15px;color:var(--ink2);padding:2px 0;letter-spacing:-.01em}
-  .nrow.past{opacity:.42}
-  .nrow.fresh .nt::before{
-    content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
-    background:var(--blue);margin-right:7px;vertical-align:1.5px;
+  /* ---------- 变动 ---------- */
+  .chg.hot .ttl{color:#d70015}
+  @media (prefers-color-scheme: dark){ .chg.hot .ttl{color:#ff6961} }
+  .crow{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--sep)}
+  .crow:last-child{border-bottom:0;padding-bottom:0}
+  .crow:first-of-type{padding-top:0}
+  .crow .cd{
+    flex:0 0 50px;font-size:13px;color:var(--ink2);line-height:1.45;
+    font-variant-numeric:tabular-nums;padding-top:3px;letter-spacing:-.01em;
   }
-  /* 置顶通知 */
-  .nrow.pin{border-left:3px solid var(--blue);padding-left:12px;margin-left:-15px}
-  .npin{
-    display:inline-block;font-size:11px;font-weight:590;letter-spacing:0;
-    padding:1.5px 6px;border-radius:5px;margin-right:7px;vertical-align:1.5px;
-    background:rgba(0,122,255,.12);color:#0062cc;
-  }
+  .crow .cb{flex:1;min-width:0}
+  .crow .ct{font-size:16px;font-weight:500;letter-spacing:-.02em;line-height:1.35}
+  .crow .ct .tag{margin:0 8px 0 0;vertical-align:2px}
+  .crow .co{font-size:13.5px;color:var(--ink2);margin-top:4px;line-height:1.55;letter-spacing:-.01em}
+  .crow .co i{font-style:normal;color:var(--ink3);margin-right:7px}
+  .crow .co b{font-weight:590;color:var(--ink)}
+  .crow .cs{font-size:12px;color:var(--ink3);margin-top:5px;letter-spacing:-.01em}
+  .crow.past{opacity:.4}
+  .tag.c{background:rgba(255,59,48,.12);color:#d70015}
+  .tag.a{background:rgba(52,199,89,.15);color:#1f8a3b}
   @media (prefers-color-scheme: dark){
-    .npin{background:rgba(10,132,255,.22);color:#5aa9ff}
+    .tag.c{background:rgba(255,69,58,.2);color:#ff6961}
+    .tag.a{background:rgba(48,209,88,.2);color:#6fdc8c}
   }
-  /* 历史折叠区 */
-  .nfold{
+  .cnone{font-size:15px;color:var(--ink2);letter-spacing:-.01em;line-height:1.5}
+  .cnx{font-size:14px;color:var(--ink2);margin-top:15px;padding-top:14px;
+    border-top:1px solid var(--sep);letter-spacing:-.01em;line-height:1.55}
+  .cnx b{font-weight:590;color:var(--ink)}
+  .cnx i{font-style:normal;display:block;font-size:12px;color:var(--ink3);
+    letter-spacing:.02em;margin-bottom:4px}
+  .cfold{
     margin-top:14px;padding-top:13px;border-top:1px solid var(--sep);
     font-size:14px;color:var(--ink2);letter-spacing:-.01em;
     display:flex;align-items:center;gap:5px;cursor:pointer;
     transition:opacity .18s var(--ease);
     -webkit-tap-highlight-color:transparent;
   }
-  .nfold:active{opacity:.5}
-  .nfold .arw{
+  .cfold:active{opacity:.5}
+  .cfold .arw{
     display:inline-block;font-size:11px;line-height:1;
     transition:transform .28s var(--ease);
   }
-  .nfold.open .arw{transform:rotate(90deg)}
+  .cfold.open .arw{transform:rotate(90deg)}
+  #chgAll{overflow:hidden;transition:height .32s var(--ease)}
   #noticeHist{overflow:hidden;transition:height .32s var(--ease)}
 
   .card{
@@ -194,6 +199,11 @@
   }
 
   /* ---------- 周课表 ---------- */
+  .ghint{
+    font-size:13px;color:var(--ink2);background:var(--card2);border-radius:10px;
+    padding:10px 12px;margin:-4px 0 14px;line-height:1.6;letter-spacing:-.01em;
+  }
+  .ghint b{font-weight:590;color:var(--ink)}
   .gwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
   .grid{display:grid;grid-template-columns:42px repeat(5,minmax(54px,1fr));gap:5px;min-width:330px}
   .grid .hh{
@@ -215,6 +225,16 @@
   .cell:active{transform:scale(.96)}
   .cell .cn{font-size:12.5px;font-weight:590;line-height:1.2;letter-spacing:-.01em}
   .cell .rm{font-size:10px;opacity:.66;letter-spacing:0}
+  .cell .gb{
+    display:inline-block;font-size:9.5px;font-weight:600;line-height:1;
+    padding:2px 4px;border-radius:4px;margin-bottom:2px;letter-spacing:0;opacity:.95;
+  }
+  .cell .gb.off{background:rgba(255,59,48,.16);color:#c4000f}
+  .cell .gb.add{background:rgba(52,199,89,.2);color:#12772f}
+  @media (prefers-color-scheme: dark){
+    .cell .gb.off{background:rgba(255,69,58,.26);color:#ff8b82}
+    .cell .gb.add{background:rgba(48,209,88,.26);color:#7ce49a}
+  }
   .cell.empty{background:var(--card2);border-radius:12px}
   .sep2{height:3px}
   /* iOS 系统色 · 浅色底 */
@@ -355,7 +375,7 @@
   <div class="big">
     <h1>地科二班</h1>
     <div class="meta" id="meta">—</div>
-    <div class="upd">数据更新：<b>2026-10-14</b> · 新增「早自习教室」与各课起止时间</div>
+    <div class="upd">数据更新：<b>2026-10-26</b> · 新增「今日变动」</div>
   </div>
 
   <nav class="seg">
@@ -373,12 +393,12 @@
       </span>
       <span class="sa">&rsaquo;</span>
     </button>
-    <div class="card ncard" id="noticeCard" hidden>
-      <div class="ttl">班级通知</div>
-      <div id="noticeList"></div>
-      <div id="noticeHist" style="height:0"></div>
-      <div id="noticeFold" class="nfold" hidden>
-        <span class="arw">▶</span><span id="noticeFoldTxt">查看历史通知</span>
+    <div class="card chg" id="chgCard" hidden>
+      <div class="ttl">今日变动</div>
+      <div id="chgToday"></div>
+      <div id="chgAll" style="height:0"></div>
+      <div id="chgFold" class="cfold" hidden>
+        <span class="arw">▶</span><span id="chgFoldTxt">查看全部变动</span>
       </div>
     </div>
     <div class="card">
@@ -404,6 +424,7 @@
   <section id="p-week" hidden>
     <div class="card">
       <div class="ttl">周课表</div>
+      <div class="ghint" id="chgHint" hidden></div>
       <div class="gwrap"><div class="grid" id="grid"></div></div>
     </div>
     <div class="card">
@@ -454,35 +475,90 @@
 
 
   <div class="foot">
-    数据来源：《（2026.10.08）26-27-1 学期地理科学学院课表》《26早自习教室》《2026-2027 秋季学期校历》《学生版-关于近期本科教学工作安排的通知》。2026 级课程自第 5 周起，第 5 周 = 10 月 12 日当周（开始上课），第 16 周 = 12 月 28 日当周。如有调整，以学校官方发布为准。
+    数据来源：《（2026.10.08）26-27-1 学期地理科学学院课表》《26早自习教室》《2026-2027 秋季学期校历》《学生版-关于近期本科教学工作安排的通知》《学院调课通知（2026-10-26）》。2026 级课程自第 5 周起，第 5 周 = 10 月 12 日当周（开始上课），第 16 周 = 12 月 28 日当周。如有调整，以学校官方发布为准。
   </div>
   <div class="credit">地科二班 · 2026 级</div>
 </div>
 
 <script>
 (function(){
-  /* ===== 班级通知 =====
-     加一条就复制一行，日期格式 2026-10-08。
-     日期过了的会自动变灰；只显示最近 8 条。 */
-  /* ===== 班级通知 =====
-     加一条 = 复制一行，改成你要的内容：
-       { d:"2026-10-08", t:"标题", b:"正文" }
-     可选字段：
-       pin:true   → 置顶，一直排在最上面（重要的事用它）
-       u:"2026-10-10" → 有效截止日。有它时，到这天之前都算"有效"，
-                        之后才收进历史（考试窗口、报名期这类用得上）
-     规则（已写死，不用管）：
-       · 未到期的按日期从近到远排，最先到期的在最上面
-       · 已过期的自动收进底部「查看历史通知」，点一下展开
-       · 最多显示 8 条
-     ⚠️ 正文里不要写"今天/明天/下周"，一律写具体日期 */
-  var NOTICES = [
-    { d:"2026-10-08", u:"2026-10-10", t:"《实验室安全与防护》期末考试", b:"10/8 零点开放，10/10 截止。只有一次机会，打开即倒计时" },
-    { d:"2026-10-12", t:"2026 级开始上课", b:"按课表上课，详见「课表」页" },
-    { d:"2026-10-17", t:"周六补课", b:"按周一课表上课" },
-    { d:"2026-10-24", t:"周六补课", b:"按周二课表上课" },
-    { d:"2026-10-31", t:"周六补课", b:"按周三课表上课" },
+  /* ===== 变动 =====
+     只在「哪天跟平常不一样」时加一条。常态课表要改，去下面的 C 里改，别写这儿。
+     加一条 = 复制一行，改成你要的：
+       { d:"2026-10-28", k:"停", t:"地球概论 停课",
+         o:"周三 第1-2节 · A304", to:"本周三不上",
+         from:"学院通知 · 10/26 收到",
+         rm:{ d:3, p:1 } }
+     字段：
+       d     变动发生在哪一天（不是发布日）
+       k     "停" 或 "补"；决定标签颜色
+       t     一句话说清变的是哪门课
+       o     原定是什么（一行，写短）
+       to    改成什么（一行，会加粗）
+       from  谁说的、什么时候收到。公信力全在这一行，别省
+       rm    这天要划掉的常态课：{d:星期几, p:第几节}
+       add   这天要加上的课：{d:星期几, p:第几节, n:课名, r:地点, t:老师, note:备注}
+     ⚠️ o / to 里一律写具体日期，不要写"今天 / 明天 / 这周三" */
+  var CHANGES = [
+    { d:"2026-10-28", k:"停", t:"地球概论 停课",
+      o:"周三 第1-2节 · A304", to:"本周三不上",
+      from:"学院通知 · 10/26 收到",
+      rm:{ d:3, p:1 } },
+    { d:"2026-10-31", k:"补", t:"周六补课 · 按周三课表",
+      o:"周六没课", to:"按周三课表上课",
+      from:"校历 · 补国庆周的周三课",
+      add:{ d:6, p:1, n:"地球概论", t:"林琳", r:"崇师楼 A304（1-2 班）", note:"补课" } },
+    { d:"2026-11-13", k:"补", t:"地球概论 补课",
+      o:"周三 10/28 第1-2节", to:"周五 第1-2节 · A304",
+      from:"学院通知 · 10/26 收到",
+      add:{ d:5, p:1, n:"地球概论", t:"林琳", r:"崇师楼 A304（1-2 班）", note:"补课" } }
   ];
+
+  function ymd(d){
+    return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+  }
+  function dtOf(s){ var p=String(s).split("-"); return new Date(+p[0],+p[1]-1,+p[2]); }
+
+  /* 某一天的课 = 常态课表 + 当天的变动（停的划掉，补的加上） */
+  function coursesOn(dt){
+    var dw = dt.getDay()===0?7:dt.getDay();
+    var tw  = Math.floor((mid(dt)-CS)/DAY/7)+5;   // 教学周次（10/12 当周 = 第 5 周）
+    var odd = tw%2===1;
+    var list = C.filter(function(c){ return c.d===dw; })
+      .filter(function(c){
+        // 周次范围：w:"5-8周" → 只在教学第 5~8 周有；没写 w 的当整学期
+        if (c.w){
+          var m = String(c.w).match(/(\d+)\s*-\s*(\d+)/);
+          if (m && (tw < +m[1] || tw > +m[2])) return false;
+        }
+        // 单双周
+        var n=c.note||"", o=n.indexOf("单")>=0, e=n.indexOf("双")>=0;
+        if(o&&!e) return odd;
+        if(e&&!o) return !odd;
+        return true;
+      })
+      .map(function(c){ var o={}; for(var k in c) o[k]=c[k]; return o; });
+    var key = ymd(dt);
+    CHANGES.forEach(function(ch){
+      if(ch.d!==key) return;
+      if(ch.rm) list = list.filter(function(c){ return !(c.d===ch.rm.d && c.p===ch.rm.p); });
+      if(ch.add) list.push(ch.add);
+    });
+    return list.sort(function(a,b){ return a.p-b.p; });
+  }
+
+  /* 本周（周一起）有没有哪天动了这一节：返回 {t:"停"/"补", c:"off"/"add"} 或 null */
+  function chgAt(d, p, dowNow){
+    var w0 = new Date(today.getTime() - (dowNow-1)*DAY);
+    var w1 = new Date(w0.getTime() + 6*DAY);
+    for (var i=0;i<CHANGES.length;i++){
+      var ch = CHANGES[i], dt = dtOf(ch.d);
+      if (dt < w0 || dt > w1) continue;
+      if (ch.rm  && ch.rm.d  === d && ch.rm.p  === p) return {t:"停", c:"off"};
+      if (ch.add && ch.add.d === d && ch.add.p === p) return {t:"补", c:"add"};
+    }
+    return null;
+  }
 
   var DAY=86400000;
   var TS=new Date(2026,7,31), CS=new Date(2026,9,12);
@@ -577,7 +653,7 @@
       '<div class="mt">'+(mt.length?mt.join("　·　"):"地点待定")+'</div></div></div>';
   }
 
-  var ti=C.filter(function(c){return c.d===dow;}).sort(function(a,b){return a.p-b.p;});
+  var ti=coursesOn(today);
   var zr="";
   if(dow>=1&&dow<=5){
     var zc=ZAO[dow];
@@ -593,6 +669,22 @@
     tc.textContent=ti.length?ti.length+" 节课":"今天没有课";
     tl.innerHTML=zr+(ti.length?ti.map(lsH).join(""):'<div class="row"><div class="bd"><div class="nm">好好休息</div></div></div>');
   }
+
+  (function(){
+    var gh=document.getElementById("chgHint");
+    if(gh){
+      var w0=new Date(today.getTime()-(dow-1)*DAY);
+      var w1=new Date(w0.getTime()+6*DAY);
+      var hits=CHANGES.filter(function(ch){var d0=dtOf(ch.d);return d0>=w0&&d0<=w1;});
+      if(hits.length){
+        gh.innerHTML="本周有变动："+hits.map(function(ch){
+          var w=dtOf(ch.d).getDay(); w=w===0?7:w;
+          return '<b>'+ch.d.slice(5).replace("-","/")+'（周'+PC[w-1]+'）</b>'+ch.t;
+        }).join("　·　")+"　详见「今天」";
+        gh.hidden=false;
+      }
+    }
+  })();
 
   (function(){
     var g=document.getElementById("grid"),ps=[];
@@ -613,7 +705,9 @@
             rm=m?(m[1]==="崇师楼"?"崇":(m[1]==="行知楼"?"行":"理三"))+m[2]:"";}
           return '<div class="cn">'+(SH[c.n]||c.n)+pm+'</div>'+(rm?'<div class="rm">'+rm+'</div>':'');
         }).join('<div class="sep2"></div>');
-        h+='<div class="cell k'+(KC[its[0].n]||0)+'">'+inner+'</div>';
+        var bd = chgAt(d, p, dow);
+        h+='<div class="cell k'+(KC[its[0].n]||0)+'">'+
+          (bd?'<div class="gb '+bd.c+'">'+bd.t+'</div>':'')+inner+'</div>';
       }
     });
     g.innerHTML=h;
@@ -666,68 +760,72 @@
 
 
   (function(){
-    var box  = document.getElementById("noticeCard");
-    var list = document.getElementById("noticeList");
-    var hist = document.getElementById("noticeHist");
-    var fold = document.getElementById("noticeFold");
-    var ftxt = document.getElementById("noticeFoldTxt");
-    if (!box || !list) return;
+    var box  = document.getElementById("chgCard");
+    var td   = document.getElementById("chgToday");
+    var all  = document.getElementById("chgAll");
+    var fold = document.getElementById("chgFold");
+    var ftx  = document.getElementById("chgFoldTxt");
+    if (!box || !td) return;
+    if (!CHANGES || !CHANGES.length){ box.hidden = true; return; }
 
-    if (!NOTICES || !NOTICES.length){
-      list.innerHTML = '<div class="nempty">暂无通知</div>';
-      box.hidden = false; return;
+    var key = ymd(today);
+    var tdy = [], up = [], past = [];
+    CHANGES.slice().sort(function(a,b){ return String(a.d).localeCompare(String(b.d)); })
+      .forEach(function(ch){
+        if (ch.d === key) tdy.push(ch);
+        else if (dtOf(ch.d) > today) up.push(ch);
+        else past.push(ch);
+      });
+
+    function dowOf(ch){ var w = dtOf(ch.d).getDay(); return w===0?7:w; }
+    function shortD(ch){
+      var p = String(ch.d).split("-");
+      return (+p[1])+"/"+(+p[2])+"<br>周"+PC[dowOf(ch)-1];
     }
-
-    var t0 = new Date();
-    var today0 = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate());
-    function dtOf(o){
-      var p = String(o.d).split("-");
-      return new Date(+p[0], +p[1] - 1, +p[2]);
-    }
-    // 有效截止日：有 u 就用 u（比如考试窗口 10/8-10/10），没有就用 d 本身
-    function endOf(o){ return o.u ? dtOf({ d: o.u }) : dtOf(o); }
-
-    var pins = [], future = [], past = [];
-    NOTICES.forEach(function(o){
-      if (o.pin) { pins.push(o); return; }
-      (endOf(o) < today0 ? past : future).push(o);
-    });
-
-    // 置顶：按日期升序（同一天保持原顺序）
-    pins.sort(function(a, b){ return String(a.d).localeCompare(String(b.d)); });
-    // 未到期：日期升序，最先到期的排最前
-    future.sort(function(a, b){ return String(a.d).localeCompare(String(b.d)); });
-    // 已过期：日期降序
-    past.sort(function(a, b){ return String(b.d).localeCompare(String(a.d)); });
-
-    var live = pins.concat(future).slice(0, 8);
-    var dead = past.slice(0, 12);
-
-    function rowOf(o, isPast){
-      var p = String(o.d).split("-");
-      var cls = isPast ? " past" : (o.pin ? " pin" : " fresh");
-      return '<div class="nrow' + cls + '">' +
-        '<div class="nd">' + p[1] + "/" + p[2] + '</div>' +
-        '<div class="nt" style="flex:1;min-width:0">' +
-        (o.pin ? '<span class="npin">置顶</span>' : '') + o.t +
-        (o.b ? '<div class="nb">' + o.b + '</div>' : '') +
+    function row(ch, dim){
+      return '<div class="crow'+(dim?' past':'')+'">'+
+        '<div class="cd">'+shortD(ch)+'</div>'+
+        '<div class="cb"><div class="ct"><span class="tag '+(ch.k==="停"?"c":"a")+'">'+ch.k+'</span>'+ch.t+'</div>'+
+        (ch.o?'<div class="co"><i>原定</i>'+ch.o+'</div>':'')+
+        (ch.to?'<div class="co"><i>改为</i><b>'+ch.to+'</b></div>':'')+
+        (ch.from?'<div class="cs">'+ch.from+'</div>':'')+
         '</div></div>';
     }
 
-    list.innerHTML = live.map(function(o){ return rowOf(o, false); }).join("");
+    function rows(arr){ return arr.map(function(ch){ return row(ch,false); }).join(""); }
+    function longD(ch){
+      var p = String(ch.d).split("-");
+      return (+p[1])+" 月 "+(+p[2])+" 日（周"+PC[dowOf(ch)-1]+"）";
+    }
 
-    // 历史折叠
-    if (dead.length){
-      hist.innerHTML = dead.map(function(o){ return rowOf(o, true); }).join("");
+    // 卡片里先只放「今天」；今天没有变动就放一条「下一次变动」。
+    // 其余的收进「查看全部变动」，避免同一条在这儿出现两遍。
+    var shown = [];
+    var h = "";
+    if (tdy.length){
+      h += rows(tdy); shown = tdy;
+    } else {
+      h += '<div class="cnone">今天按课表正常上课。</div>';
+      if (up.length){
+        h += '<div class="cnx"><i>下一次变动</i><b>'+longD(up[0])+'</b> · '+up[0].t+'</div>';
+        shown = [up[0]];
+      }
+    }
+    td.innerHTML = h;
+    if (tdy.length) box.classList.add("hot");
+
+    var rest = CHANGES.filter(function(ch){ return shown.indexOf(ch) < 0; })
+      .sort(function(a,b){ return String(a.d).localeCompare(String(b.d)); });
+    if (rest.length){
+      all.innerHTML = rest.map(function(ch){ return row(ch, dtOf(ch.d) < today); }).join("");
       fold.hidden = false;
-      ftxt.textContent = "查看历史通知（" + dead.length + "）";
-
+      ftx.textContent = "查看全部变动（" + rest.length + "）";
       var open = false;
       fold.addEventListener("click", function(){
         open = !open;
         fold.classList.toggle("open", open);
-        hist.style.height = open ? (hist.scrollHeight + "px") : "0px";
-        ftxt.textContent = open ? "收起历史通知" : ("查看历史通知（" + dead.length + "）");
+        all.style.height = open ? (all.scrollHeight + "px") : "0px";
+        ftx.textContent = open ? "收起全部变动" : ("查看全部变动（" + rest.length + "）");
       });
     }
 
